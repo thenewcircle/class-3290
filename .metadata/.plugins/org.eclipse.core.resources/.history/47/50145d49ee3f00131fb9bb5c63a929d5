@@ -1,0 +1,14 @@
+#include <jni.h>
+
+namespace com_manwin_fib {
+
+	long fib(long n) {
+		if(n==0) return 0;
+		if(n==1) return 1;
+		return fib(n-1) + fib(n-2);
+	}
+
+	JNIEXPORT jlong fibN(JNIEnv *env, jclass clazz, jlong n) {
+		return (jlong)fib( (long) n)
+	}
+}

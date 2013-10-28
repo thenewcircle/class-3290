@@ -1,0 +1,5 @@
+#include <jni.h>
+
+namespace com_manwin_fib {
+
+}

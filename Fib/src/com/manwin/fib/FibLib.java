@@ -2,9 +2,11 @@ package com.manwin.fib;
 
 public class FibLib {
 
-	public static long fib(long n) {
+	public static long fibJ(long n) {
 		if(n==0) return 0;
 		if(n==1) return 1;
-		return fib(n-1) + fib(n-2);
+		return fibJ(n-1) + fibJ(n-2);
 	}
+	
+	public static native long fibN(long n);
 }

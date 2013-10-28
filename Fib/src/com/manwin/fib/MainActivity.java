@@ -1,6 +1,7 @@
 package com.manwin.fib;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,6 +13,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private EditText input;
 	private Button buttonGo;
 	private TextView output;
+	private FibTask task;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +30,29 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		long n = Long.parseLong(input.getText().toString());
-		long result = FibLib.fib(n);
-		output.append( String.format("\n fib(%d) = %d", n, result));
+
+		task = new FibTask();
+		task.execute(n);
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		task.cancel(true);
 	}
 
+	class FibTask extends AsyncTask<Long, Void, Long> {
+		private long n;
+
+		@Override
+		protected Long doInBackground(Long... params) {
+			this.n = params[0];
+			return FibLib.fibJ(n);
+		}
+
+		@Override
+		protected void onPostExecute(Long result) {
+			output.append(String.format("\n fib(%d)= %d", n, result));
+		}
+	}
 }
