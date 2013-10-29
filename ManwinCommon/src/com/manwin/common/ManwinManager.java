@@ -36,11 +36,11 @@ public class ManwinManager {
 		}
 	};
 	
-	public boolean update(String packageName) {
+	public boolean update(String packageName, IManwinListener listener) {
 		if(service==null) return false;
 		
 		try {
-			return service.update(packageName);
+			return service.update(packageName, listener);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return false;

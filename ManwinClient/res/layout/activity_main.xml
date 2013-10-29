@@ -16,12 +16,12 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:text="@string/go" />
-
+ 
     <TextView
         android:id="@+id/output"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignLeft="@+id/input"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/buttonGo"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -30,6 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/buttonGo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/buttonGo"
         android:ems="10" />
 
