@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -51,11 +50,12 @@ public class SceneProvider extends ContentProvider {
 
 		db = dbHelper.getWritableDatabase();
 		long rowId = db.insertWithOnConflict(SceneContract.TABLE, null, values,
-				SQLiteDatabase.CONFLICT_REPLACE);
+				SQLiteDatabase.CONFLICT_IGNORE);
 		if (rowId == -1)
-			throw new SQLiteException("Failed to insert for uri: " + uri);
+			return null;
 		Uri ret = ContentUris.withAppendedId(uri,
 				values.getAsInteger(SceneContract.Columns.ID));
+		getContext().getContentResolver().notifyChange(ret, null);
 		Log.d(TAG, "inserted: " + ret);
 		return ret;
 	}
@@ -89,7 +89,9 @@ public class SceneProvider extends ContentProvider {
 		}
 
 		db = dbHelper.getWritableDatabase();
-		return db.delete(SceneContract.TABLE, where, selectionArgs);
+		int ret = db.delete(SceneContract.TABLE, where, selectionArgs);
+		getContext().getContentResolver().notifyChange(uri, null);
+		return ret;
 	}
 
 	// SELECT id, title FROM scene WHERE title='%Big%' ORDER BY created_at DESC
@@ -112,9 +114,10 @@ public class SceneProvider extends ContentProvider {
 		}
 
 		db = dbHelper.getReadableDatabase();
-		Cursor cursor = qb.query(db, projection, selection, selectionArgs, null, null,
-				sortOrder);
-		Log.d(TAG, "query got records: "+cursor.getCount());
+		Cursor cursor = qb.query(db, projection, selection, selectionArgs,
+				null, null, sortOrder);
+		cursor.setNotificationUri(getContext().getContentResolver(), uri);
+		Log.d(TAG, "query got records: " + cursor.getCount());
 		return cursor;
 	}
 }

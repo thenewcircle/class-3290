@@ -14,6 +14,8 @@ import org.json.JSONObject;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteException;
+import android.net.Uri;
 import android.util.Log;
 
 public class RefreshService extends IntentService {
@@ -26,7 +28,8 @@ public class RefreshService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		String api = Private.key;
-		
+		int count = 0;
+
 		try {
 			URL url = new URL(api);
 			URLConnection connection = url.openConnection();
@@ -50,16 +53,24 @@ public class RefreshService extends IntentService {
 			int id;
 			String title;
 			ContentValues values = new ContentValues();
+			Uri uri = null;
 			for (int i = 0; i < scenes.length(); i++) {
 				scene = scenes.getJSONObject(i);
 				id = scene.getInt("scene_id");
 				title = scene.getString("scene_title");
 				Log.d(TAG, String.format("%d: %s", id, title));
-				
+
 				values.clear();
 				values.put(SceneContract.Columns.ID, id);
 				values.put(SceneContract.Columns.TITLE, title);
-				getContentResolver().insert(SceneContract.CONTENT_URI, values);
+				try {
+					uri = getContentResolver().insert(
+							SceneContract.CONTENT_URI, values);
+				} catch (SQLiteException e) {
+					e.printStackTrace();
+				}
+				if (uri != null)
+					count++;
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -67,6 +78,11 @@ public class RefreshService extends IntentService {
 			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
+		}
+
+		if (count > 0) {
+			sendBroadcast(new Intent("com.manwin.cookie.NEW_SCENES").putExtra(
+					"count", count));
 		}
 	}
 }
