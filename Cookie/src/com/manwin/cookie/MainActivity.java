@@ -10,19 +10,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends FragmentActivity {
-	private Fragment sceneListFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		if (savedInstanceState == null) {
-			sceneListFragment = new SceneListFragment();
-			getSupportFragmentManager()
-					.beginTransaction()
-					.add(android.R.id.content, sceneListFragment,
-							"SceneListFragment").commit();
-		}
+		setContentView(R.layout.activity_main);
 	}
 
 	@Override

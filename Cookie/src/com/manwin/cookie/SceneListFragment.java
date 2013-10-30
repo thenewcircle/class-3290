@@ -13,6 +13,7 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.TextView;
 
@@ -80,6 +81,24 @@ public class SceneListFragment extends ListFragment implements
 		getListView().setOnScrollListener(scrollListener);
 
 		getLoaderManager().initLoader(LOADER_ID, null, this);
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+
+		SceneFragment fragment = (SceneFragment) getActivity()
+				.getSupportFragmentManager().findFragmentById(
+						R.id.fragment_scene);
+
+		if (fragment != null && fragment.isVisible()) {
+			fragment.setContent(id);
+		} else {
+			Intent intent = new Intent(getActivity(), SceneActivity.class);
+			intent.putExtra("id", id);
+			intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+					| Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			getActivity().startActivity(intent);
+		}
 	}
 
 	@Override

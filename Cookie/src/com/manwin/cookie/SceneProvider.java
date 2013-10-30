@@ -63,8 +63,28 @@ public class SceneProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
+		String where;
+		switch (uriMatcher.match(uri)) {
+		case SceneContract.SCENE_DIR:
+			where = selection;
+			break;
+		case SceneContract.SCENE_ITEM:
+			long id = ContentUris.parseId(uri);
+			if (TextUtils.isEmpty(selection)) {
+				where = String.format("%s=%d", SceneContract.Columns.ID, id);
+			} else {
+				where = String.format("%s=%d AND %s", SceneContract.Columns.ID,
+						id, selection);
+			}
+			break;
+		default:
+			throw new IllegalArgumentException("Unsupported uri: " + uri);
+		}
+
+		db = dbHelper.getWritableDatabase();
+		int ret = db.update(SceneContract.TABLE, values, where, selectionArgs);
+		getContext().getContentResolver().notifyChange(uri, null);
+		return ret;
 	}
 
 	// DELETE from scene WHERE id=47 AND title="%Big%"

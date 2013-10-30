@@ -25,6 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.manwin.cookie.SceneActivity"
+            android:exported="false" android:launchMode="singleTask" >
+        </activity>
 
         <service android:name="com.manwin.cookie.RefreshService" >
         </service>
@@ -34,17 +38,17 @@
             android:authorities="com.manwin.cookie.provider.scene"
             android:exported="false" >
         </provider>
-        
-        <receiver android:name="com.manwin.cookie.NotificationReceiver"
-            android:exported="false">
-            <intent-filter >
-                <action android:name="com.manwin.cookie.NEW_SCENES"/>
+
+        <receiver
+            android:name="com.manwin.cookie.NotificationReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.manwin.cookie.NEW_SCENES" />
             </intent-filter>
         </receiver>
-        
-        <receiver android:name="com.manwin.cookie.BootReceiver">
-            <intent-filter >
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        <receiver android:name="com.manwin.cookie.BootReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
     </application>
