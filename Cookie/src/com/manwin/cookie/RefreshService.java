@@ -50,19 +50,23 @@ public class RefreshService extends IntentService {
 
 			JSONArray scenes = jsonFeed.getJSONArray("scenes");
 			JSONObject scene;
-			int id;
-			String title;
+			long id, date;
+			String title, site;
 			ContentValues values = new ContentValues();
 			Uri uri = null;
 			for (int i = 0; i < scenes.length(); i++) {
 				scene = scenes.getJSONObject(i);
-				id = scene.getInt("scene_id");
+				id = scene.getLong("scene_id");
 				title = scene.getString("scene_title");
+				site = scene.getString("site_name");
+				date = scene.getLong("date_added");
 				Log.d(TAG, String.format("%d: %s", id, title));
 
 				values.clear();
 				values.put(SceneContract.Columns.ID, id);
 				values.put(SceneContract.Columns.TITLE, title);
+				values.put(SceneContract.Columns.SITE, site);
+				values.put(SceneContract.Columns.DATE, date);
 				try {
 					uri = getContentResolver().insert(
 							SceneContract.CONTENT_URI, values);

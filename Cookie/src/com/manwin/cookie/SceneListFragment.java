@@ -7,13 +7,35 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
+import android.text.format.DateUtils;
+import android.view.View;
+import android.widget.TextView;
 
 public class SceneListFragment extends ListFragment implements
 		LoaderManager.LoaderCallbacks<Cursor> {
-	private static final String[] FROM = { SceneContract.Columns.TITLE };
-	private static final int[] TO = { android.R.id.text1 };
+	private static final String[] FROM = { SceneContract.Columns.TITLE,
+			SceneContract.Columns.SITE, SceneContract.Columns.DATE };
+	private static final int[] TO = { R.id.title, R.id.site, R.id.date };
 	private static final int LOADER_ID = 42;
 	private SimpleCursorAdapter adapter;
+
+	private static final ViewBinder VIEW_BINDER = new ViewBinder() {
+
+		@Override
+		public boolean setViewValue(View view, Cursor cursor, int index) {
+			if (view.getId() != R.id.date)
+				return false;
+			
+			// custom bind
+			long timestamp = cursor.getLong(index) * 1000;
+			CharSequence relTime = DateUtils.getRelativeTimeSpanString(timestamp);
+			((TextView)view).setText(relTime);
+			
+			return true;
+		}
+
+	};
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -21,8 +43,9 @@ public class SceneListFragment extends ListFragment implements
 
 		setEmptyText("Loading...");
 
-		adapter = new SimpleCursorAdapter(getActivity(),
-				android.R.layout.simple_list_item_1, null, FROM, TO, -1);
+		adapter = new SimpleCursorAdapter(getActivity(), R.layout.row, null,
+				FROM, TO, -1);
+		adapter.setViewBinder(VIEW_BINDER);
 
 		setListAdapter(adapter);
 

@@ -14,17 +14,18 @@ public class DbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		String sql = String.format(
-				"create table %s (%s integer primary key, %s text)",
-				SceneContract.TABLE, SceneContract.Columns.ID,
-				SceneContract.Columns.TITLE);
-		Log.d(TAG, "onCreate: "+sql);
+		String sql = String
+				.format("create table %s (%s integer primary key, %s text, %s text, %s integer)",
+						SceneContract.TABLE, SceneContract.Columns.ID,
+						SceneContract.Columns.TITLE,
+						SceneContract.Columns.SITE, SceneContract.Columns.DATE);
+		Log.d(TAG, "onCreate: " + sql);
 		db.execSQL(sql);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.execSQL("drop table if exists "+SceneContract.TABLE);
+		db.execSQL("drop table if exists " + SceneContract.TABLE);
 		this.onCreate(db);
 	}
 
