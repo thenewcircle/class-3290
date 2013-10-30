@@ -1,5 +1,6 @@
 package com.manwin.cookie;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -9,11 +10,15 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.TextView;
 
 public class SceneListFragment extends ListFragment implements
 		LoaderManager.LoaderCallbacks<Cursor> {
+	private static final String TAG = "SceneListFragment";
 	private static final String[] FROM = { SceneContract.Columns.TITLE,
 			SceneContract.Columns.SITE, SceneContract.Columns.DATE };
 	private static final int[] TO = { R.id.title, R.id.site, R.id.date };
@@ -26,15 +31,39 @@ public class SceneListFragment extends ListFragment implements
 		public boolean setViewValue(View view, Cursor cursor, int index) {
 			if (view.getId() != R.id.date)
 				return false;
-			
+
 			// custom bind
 			long timestamp = cursor.getLong(index) * 1000;
-			CharSequence relTime = DateUtils.getRelativeTimeSpanString(timestamp);
-			((TextView)view).setText(relTime);
-			
+			CharSequence relTime = DateUtils
+					.getRelativeTimeSpanString(timestamp);
+			((TextView) view).setText(relTime);
+
 			return true;
 		}
 
+	};
+
+	private static int offset = 0;
+	private static boolean shouldRefresh = true;
+	private final OnScrollListener scrollListener = new OnScrollListener() {
+
+		@Override
+		public void onScrollStateChanged(AbsListView view, int scrollState) {
+		}
+
+		@Override
+		public void onScroll(AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount) {
+			int lastVisibleInScreen = firstVisibleItem + visibleItemCount;
+
+			if (shouldRefresh && lastVisibleInScreen >= adapter.getCount()) {
+				shouldRefresh = false;
+				Log.d(TAG, "should update");
+				getActivity().startService(
+						new Intent(getActivity(), RefreshService.class)
+								.putExtra("offset", offset++));
+			}
+		}
 	};
 
 	@Override
@@ -48,6 +77,7 @@ public class SceneListFragment extends ListFragment implements
 		adapter.setViewBinder(VIEW_BINDER);
 
 		setListAdapter(adapter);
+		getListView().setOnScrollListener(scrollListener);
 
 		getLoaderManager().initLoader(LOADER_ID, null, this);
 	}
@@ -64,10 +94,13 @@ public class SceneListFragment extends ListFragment implements
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		adapter.swapCursor(cursor);
+		shouldRefresh = true;
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		adapter.swapCursor(null);
+		shouldRefresh = true;
 	}
+
 }

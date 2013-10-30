@@ -27,8 +27,11 @@ public class RefreshService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		String api = Private.key;
+		int offset = intent.getIntExtra("offset", 0);
+		String api = String.format(Private.key, offset*Private.limit);
 		int count = 0;
+		
+		Log.d(TAG, "onHandleIntent api: "+api);
 
 		try {
 			URL url = new URL(api);
@@ -43,7 +46,7 @@ public class RefreshService extends IntentService {
 			while (in.read(buffer) != -1) {
 				strBuffer.append(buffer);
 			}
-			Log.d(TAG, "StrBuffer: " + strBuffer);
+			// Log.d(TAG, "StrBuffer: " + strBuffer);
 			in.close();
 
 			JSONObject jsonFeed = new JSONObject(strBuffer.toString());
@@ -60,7 +63,7 @@ public class RefreshService extends IntentService {
 				title = scene.getString("scene_title");
 				site = scene.getString("site_name");
 				date = scene.getLong("date_added");
-				Log.d(TAG, String.format("%d: %s", id, title));
+				// Log.d(TAG, String.format("%d: %s", id, title));
 
 				values.clear();
 				values.put(SceneContract.Columns.ID, id);

@@ -15,5 +15,6 @@
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/purge">
     </item>
+    <item android:id="@+id/action_cancel_updates" android:title="@string/cancel_updates"></item>
 
 </menu>

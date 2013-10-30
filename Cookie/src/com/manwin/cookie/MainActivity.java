@@ -1,6 +1,7 @@
 package com.manwin.cookie;
 
-import android.app.NotificationManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,14 @@ public class MainActivity extends FragmentActivity {
 			return true;
 		case R.id.action_purge:
 			getContentResolver().delete(SceneContract.CONTENT_URI, null, null);
+			return true;
+			
+		case R.id.action_cancel_updates:
+			PendingIntent operation = PendingIntent.getService(this, 0,
+					new Intent(this, RefreshService.class),
+					PendingIntent.FLAG_UPDATE_CURRENT);
+			
+			((AlarmManager)getSystemService(ALARM_SERVICE)).cancel(operation);
 			return true;
 		default:
 			return false;

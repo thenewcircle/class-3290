@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="refresh">Refresh</string>
     <string name="purge">Purge</string>
+    <string name="cancel_updates">Cancel Updates</string>
 
 </resources>

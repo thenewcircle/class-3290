@@ -21,7 +21,9 @@ public class BootReceiver extends BroadcastReceiver {
 				.getSystemService(Context.ALARM_SERVICE);
 
 		am.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(),
-				AlarmManager.INTERVAL_DAY, operation);
+				AlarmManager.INTERVAL_DAY,
+				//30000, 
+				operation);
 		
 		Log.d(TAG, "onReceived");
 	}
