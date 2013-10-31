@@ -34,12 +34,12 @@ public class SceneFragment extends Fragment {
 
 		if (cursor.moveToFirst()) {
 			
-			String activityId = "\n\nActivity: "+getActivity().toString();
+			//String activityId = "\n\nActivity: "+getActivity().toString();
 			
 			title.setText(cursor.getString(cursor
 					.getColumnIndex(SceneContract.Columns.TITLE)));
 			desc.setText(cursor.getString(cursor
-					.getColumnIndex(SceneContract.Columns.SITE)) + activityId);
+					.getColumnIndex(SceneContract.Columns.SITE)) );
 		}
 	}
 }

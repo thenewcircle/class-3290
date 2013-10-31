@@ -1,0 +1,34 @@
+# Imports the monkeyrunner modules used by this program
+from com.android.monkeyrunner import MonkeyRunner, MonkeyDevice
+
+# Connects to the current device, returning a MonkeyDevice object
+device = MonkeyRunner.waitForConnection()
+
+# Installs the Android package. Notice that this method returns a boolean, so you can test
+# to see if the installation worked.
+device.installPackage('../Cookie/bin/Cookie.apk')
+
+# sets a variable with the package's internal name
+package = 'com.manwin.cookie'
+
+# sets a variable with the name of an Activity in the package
+activity = 'com.manwin.cookie.MainActivity'
+
+# sets the name of the component to start
+runComponent = package + '/' + activity
+
+# Runs the activity
+device.startActivity(component=runComponent)
+result = device.takeSnapshot()
+result.writeToFile('screen1.png','png')
+
+# Presses the Menu button
+device.press('KEYCODE_MENU', MonkeyDevice.DOWN_AND_UP)
+result = device.takeSnapshot()
+result.writeToFile('screen2.png','png')
+
+# Refresh
+device.press('KEYCODE_DPAD_DOWN', MonkeyDevice.DOWN_AND_UP)
+device.touch(400, 270, "DOWN_AND_UP")
+result = device.takeSnapshot()
+result.writeToFile('screen2.png','png')
