@@ -8,7 +8,7 @@ public class ManwinService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		return new IManwinServiceImpl();
+		return new IManwinServiceImpl(this);
 	}
 
 }
